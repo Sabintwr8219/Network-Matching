@@ -1,0 +1,9 @@
+.venv/
+__pycache__/
+*.pyc
+
+# Local input datasets
+Initial Input Files/
+
+# Generated project outputs
+Output/

@@ -1,0 +1,12 @@
+pandas
+numpy
+pyproj
+scikit-learn
+shapely>=2.0
+rtree
+osm2gmns
+geopandas
+joblib
+tqdm
+psutil>=5.9
+pyarrow>=15.0
