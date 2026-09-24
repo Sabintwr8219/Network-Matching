@@ -114,8 +114,8 @@ def main():
             "candidate_parent_count",
         ],
     )
-    if len(pieces) != 17_448_950:
-        raise ValueError("Unexpected piece count.")
+    if pieces.empty:
+        raise ValueError("No piece matches to consolidate.")
 
     expected_length = pieces["length_m"].sum()
     expected_matched_length = pieces.loc[
@@ -144,7 +144,7 @@ def main():
         validate="one_to_one",
         indicator=True,
     )
-    if len(summary) != 3_780_936 or not summary["_merge"].eq("both").all():
+    if len(summary) != len(links) or not summary["_merge"].eq("both").all():
         raise ValueError("Consolidated links do not match original OSM links.")
     summary = summary.drop(columns="_merge")
 

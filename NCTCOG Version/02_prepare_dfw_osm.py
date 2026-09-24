@@ -1,9 +1,8 @@
 """Create an OSM-only DFW short-link network for NCTCOG matching.
 
-The script reads the Dallas and Fort Worth matched district files in chunks,
-removes TxDOT attributes, and retains complete OSM links intersecting the
-NCTCOG network bounding rectangle plus a small margin. Source files are never
-modified.
+The script reads explicitly configured district files in chunks, removes
+TxDOT attributes, and retains complete OSM links intersecting the NCTCOG
+network bounding rectangle plus a small margin. Source files are never modified.
 """
 
 import argparse
@@ -128,6 +127,7 @@ def prepare_output(overwrite=False):
     invalid_geometry_counts = {}
     total_read = 0
     total_retained = 0
+    selected_keys = set()
 
     with NamedTemporaryFile(
         mode="w", suffix=".csv", prefix="DFW_OSM_partial_",
@@ -170,6 +170,19 @@ def prepare_output(overwrite=False):
                 selected = chunk.loc[keep, OSM_COLUMNS]
 
                 if not selected.empty:
+                    keys = selected["link_key"].astype("string")
+                    if keys.isna().any() or keys.str.strip().eq("").any():
+                        raise ValueError(f"Missing OSM link key in {source.name}.")
+                    batch_keys = set(keys)
+                    overlap = batch_keys.intersection(selected_keys)
+                    if len(batch_keys) != len(keys) or overlap:
+                        examples = keys[keys.duplicated()].head(5).tolist()
+                        examples += sorted(overlap)[:5]
+                        raise ValueError(
+                            "Duplicate OSM link_key across selected district "
+                            f"rows in {source.name}: {examples[:10]}"
+                        )
+                    selected_keys.update(batch_keys)
                     selected.to_csv(
                         temp_path,
                         mode="a",
@@ -194,6 +207,8 @@ def prepare_output(overwrite=False):
 
         if total_retained == 0:
             raise ValueError("No OSM links intersect the NCTCOG selection extent.")
+        if len(selected_keys) != total_retained:
+            raise ValueError("Selected OSM keys are not unique.")
 
         temp_path.replace(OUTPUT_CSV)
 

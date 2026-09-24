@@ -191,7 +191,10 @@ def process_file(
         if writer is not None:
             writer.close()
 
-    if (parents, pieces) != (expected_parents, expected_pieces):
+    if parents == 0 or pieces == 0:
+        raise ValueError(f"{label}: empty segmented output.")
+    if ((expected_parents is not None and parents != expected_parents)
+            or (expected_pieces is not None and pieces != expected_pieces)):
         raise ValueError(
             f"{label}: unexpected counts: {parents:,} parents, "
             f"{pieces:,} pieces. Output remains a partial file."
@@ -221,8 +224,8 @@ def main():
         geometry_column="geometry",
         extra_columns=["facility_type"],
         chunk_size=50_000,
-        expected_parents=3_780_936,
-        expected_pieces=17_448_950,
+        expected_parents=None,
+        expected_pieces=None,
     )
 
     process_file(

@@ -27,7 +27,7 @@ def find_project_root():
 
 PROJECT_ROOT = find_project_root()
 
-NCTCOG_CODE_DIR = PROJECT_ROOT / "NCTCOG Version"
+NCTCOG_CODE_DIR = PROJECT_ROOT / "NCTCOG code"
 
 NCTCOG_INPUT = (
     PROJECT_ROOT / "Initial Input Files" / "NCTCOG" / "links_NCTCOG.csv"
@@ -43,6 +43,11 @@ DISTRICT_INPUT_DIR = (
 DISTRICT_OSM_INPUTS = [
     DISTRICT_INPUT_DIR / "Dallas_Link_List.csv",
     DISTRICT_INPUT_DIR / "Fort_Worth_Link_List.csv",
+    DISTRICT_INPUT_DIR / "Bryan_Link_List.csv",
+    DISTRICT_INPUT_DIR / "Paris_Link_List.csv",
+    DISTRICT_INPUT_DIR / "Tyler_Link_List.csv",
+    DISTRICT_INPUT_DIR / "Waco_Link_List.csv",
+    DISTRICT_INPUT_DIR / "Wichita_Falls_Link_List.csv",
 ]
 PREPARED_INPUT_DIR = NCTCOG_CODE_DIR / "Prepared Inputs"
 OSM_INPUT = (

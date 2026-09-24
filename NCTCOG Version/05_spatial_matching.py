@@ -47,8 +47,8 @@ def load_nctcog_index():
     )
     decode_finished = time.perf_counter()
 
-    if len(frame) != 5_522_572:
-        raise ValueError(f"Unexpected NCTCOG piece count: {len(frame):,}")
+    if frame.empty:
+        raise ValueError("No NCTCOG pieces to match.")
 
     headings = frame["heading_grid_deg"].to_numpy()
     if not np.all(
@@ -172,8 +172,8 @@ def run_matching():
         raise ValueError("Expected OSM geometry stored as WKB.")
 
     expected_rows = parquet.metadata.num_rows
-    if expected_rows != 17_448_950:
-        raise ValueError(f"Unexpected OSM piece count: {expected_rows:,}")
+    if expected_rows == 0:
+        raise ValueError("No OSM pieces to match.")
 
     process = psutil.Process()
     started = time.perf_counter()
